@@ -1,0 +1,410 @@
+-- checks if the ped was already created. If not, this creates the ped config (includes things like first name, surname, date of birth, ...)
+-- PedGender needs to be 'Male' or 'Female'
+-- variables: EntityNetId, STRING
+local QBCore = exports['qb-core']:GetCoreObject()
+RegisterNetEvent('pd5m:intsv:AddPedToList')
+AddEventHandler('pd5m:intsv:AddPedToList', function(NetID, PedGender)
+	local flag_duplicate = false
+	for i,ID in ipairs(PedList) do
+		if ID == NetID then
+			flag_duplicate = true
+			if PedConfigList[i].FirstName ~= nil then
+			else
+				table.remove(PedList, i)
+				table.insert(PedList, NetID)
+				TriggerEvent('pd5m:intsv:InitPedConfigList', NetID, PedGender)
+			end
+			break
+		end
+	end
+	if not flag_duplicate then
+		table.insert(PedList, NetID)
+		TriggerEvent('pd5m:intsv:InitPedConfigList', NetID, PedGender)
+	end
+end)
+
+-- Creates config information for a specific ped
+-- don't use this, trigger Event 'pd5m:intsv:AddPedToList'
+AddEventHandler('pd5m:intsv:InitPedConfigList', function(PedNetID, Gender)
+
+	local PedFirstName = nil
+
+	if Gender == "Male" then
+		PedFirstName = fmalenamesar[math.random(#fmalenamesar)]
+	else
+		PedFirstName = ffemalenamesar[math.random(#ffemalenamesar)]
+	end
+
+	local PedInfosListInit = {
+	NetID = PedNetID,
+	PedGender = Gender,
+	FirstName = PedFirstName,
+	LastName = snamesar[math.random(#snamesar)],
+	BirthYear = math.random(1980, 1999),
+	BirthMonth = math.random(1, 12),
+	BirthDay = math.random(1, 29),
+	RandomID = nil,
+	RandomLicenceID = nil,  --Valid, Expired, Suspended
+	RandomWeaponID = nil,
+	VehicleNetID = nil,
+	PedUnusualActivity = {},
+	flagismissionped = false,
+	AlliesList = {}, --input NetIDs of allied peds. Useful for gang activity and missions
+
+	flagfleeinstant = false,
+	flagfight = false,
+	flagdrug = false,
+	savedrug = nil,
+	savedruglevel = 0, -- unit ng / ml
+	flagdrunk = false,
+	savedrunklevel = 0, -- unit 0.1 BAC / Promille
+	flagwanted = false,
+	saveoffense = 'None',
+	flagpedillegalweapon = false,
+	savepedweapons = {},
+	flagpedillegalitem = false,
+	savepeditems = {},
+	flagid = true,
+	flaghideid = false,
+	flaglicence = true,
+	flagweaponlicence = true,
+	resistmodifier = 0,
+
+	flagallowbreathalyzer = false,
+	flagallowdrugtest = false,
+	flagallowpersonsearch = false,
+	flagallowcarsearch = false,
+
+	flagallowcarseizure = false,
+	flagallowitemconfiscation = false,
+	flagallowarrest = false,
+	flagallowfine = false,
+	}
+
+	-- Random ID Generation
+	local RandomIDPre = math.random(1, 999999999999)
+	local RandomIDPreDigits = 11 - math.floor(math.log10(RandomIDPre))
+	local RandomIDDigits = ""
+	for i=1, RandomIDPreDigits do
+		RandomIDDigits = RandomIDDigits .. "0"
+	end
+	local RandomID = RandomIDDigits .. RandomIDPre
+	PedInfosListInit.RandomID = RandomID
+	RandomIDDigits = "0"
+
+	local RandomLicenceIDPre = math.random(1, 999999999)
+	local RandomLicenceIDPreDigits = 8 - math.floor(math.log10(RandomLicenceIDPre))
+	local RandomLicenceIDDigits = ""
+	for i=1, RandomLicenceIDPreDigits do
+		RandomLicenceIDDigits = RandomLicenceIDDigits .. "0"
+	end
+	local RandomLicenceID = RandomLicenceIDDigits .. RandomLicenceIDPre
+	PedInfosListInit.RandomLicenceID = RandomLicenceID
+	RandomLicenceIDDigits = "0"
+
+	local RandomWeaponIDPre = math.random(1, 999999999)
+	local RandomWeaponIDPreDigits = 8 - math.floor(math.log10(RandomWeaponIDPre))
+	local RandomWeaponIDDigits = ""
+	for i=1, RandomWeaponIDPreDigits do
+		RandomWeaponIDDigits = RandomWeaponIDDigits .. "0"
+	end
+	local RandomWeaponID = RandomWeaponIDDigits .. RandomWeaponIDPre
+	PedInfosListInit.RandomWeaponID = RandomWeaponID
+	RandomIDDigits = "0"
+
+	-- Chance for certain flags
+	if math.random(1, 10000) <= PedDruggedChance*100 then
+		PedInfosListInit.flagdrug = true
+		PedInfosListInit.savedrug = DrugList[math.random(1, #DrugList)]
+		PedInfosListInit.savedruglevel = math.random(10, 200)
+	end
+	if math.random(1, 10000) < PedDrunkChance*100 then
+		PedInfosListInit.flagdrunk = true
+		PedInfosListInit.savedrunklevel = math.random(20, 400)/100
+	end
+	if math.random(1, 10000) < PedWantedChance*100 then
+		PedInfosListInit.flagwanted = true
+		PedInfosListInit.saveoffense = OffenseList[math.random(1, #OffenseList)]
+	end
+	if math.random(1, 10000) < PedNoIDChance*100 then
+		PedInfosListInit.flagid = false
+	end
+	if math.random(1, 10000) < PedNoDriverLicenceChance*100 then
+		PedInfosListInit.flaglicence = false
+	end
+	if math.random(1, 10000) < PedNoWeaponLicenceChance*100 then
+		PedInfosListInit.flagweaponlicence = false
+	end
+
+	-- Chance to carry a weapon
+	local meleechance = PedMeleeBaseChance*100
+	local weaponchance = PedLegalWeapBaseChance*100
+	local illegalweaponchance = PedIllegalWeapBaseChance*100
+	if PedInfosListInit.flagweaponlicence then
+		meleechance = meleechance + PedMeleeWeaponLicenceModifier*100
+		weaponchance = weaponchance + PedLegalWeapLicenceModifier*100
+		illegalweaponchance = weaponchance + PedIllegalWeapLicenceModifier*100
+	end
+	if PedInfosListInit.flagwanted then
+		meleechance = meleechance + PedMeleeWeaponWantedModifier*100
+		weaponchance = weaponchance + PedLegalWeapWantedModifier*100
+		illegalweaponchance = illegalweaponchance + PedIllegalWeapWantedModifier*100
+	end
+	if math.random(1, 10000) < meleechance then
+		for i=1,math.random(1,4),1 do
+			table.insert(PedInfosListInit.savepedweapons, MeleeList[math.random(1, #MeleeList)])
+		end
+	end
+	if math.random(1, 10000) < weaponchance then
+		for i=1,math.random(1,4),1 do
+			table.insert(PedInfosListInit.savepedweapons, WeaponList[math.random(1, #WeaponList)])
+			if not PedInfosListInit.flagweaponlicence then
+				PedInfosListInit.flagpedillegalweapon = true
+			end
+		end
+	end
+	if math.random(1, 10000) < illegalweaponchance then
+		for i=1,math.random(1,4),1 do
+			table.insert(PedInfosListInit.savepedweapons, IllegalWeaponList[math.random(1, #IllegalWeaponList)])
+		end
+		PedInfosListInit.flagpedillegalweapon = true
+	end
+
+	-- Chance to carry an illegal item
+	local illegalitemchance = PedIllegalItemBaseChance*100
+
+	if PedInfosListInit.flagwanted then
+		illegalitemchance = illegalitemchance + PedIllegalItemWantedModifier*100
+	end
+	if math.random(1, 10000) < illegalitemchance then
+		for i=1, math.random(1,4),1 do
+			table.insert(PedInfosListInit.savepeditems, IllegalItemList[math.random(1, #IllegalItemList)])
+		end
+		PedInfosListInit.flagpedillegalitem = true
+	end
+	if PedInfosListInit.flagdrug and math.random(1, 10000) < (PedIllegalItemDrugChance*100) then
+		table.insert(PedInfosListInit.savepeditems, PedInfosListInit.savedrug)
+		PedInfosListInit.flagpedillegalitem = true
+	end
+	if PedInfosListInit.flagpedillegalitem then
+		for i=1, math.random(1,4),1 do
+			table.insert(PedInfosListInit.savepeditems, ItemList[math.random(1, #ItemList)])
+		end
+	else
+		for i=1, math.random(1,8),1 do
+			table.insert(PedInfosListInit.savepeditems, ItemList[math.random(1, #ItemList)])
+		end
+	end
+
+	-- Chance to hide id
+	-- Chance to flee instant
+	-- Flag Resist Modifier
+	-- Chance to fight
+	local hideidchance = PedHideIDBaseChance*100
+	local fleeinstantchance = PedFleeInstantBaseChance*100
+	local resistmodifier = 0
+	local fightchance = PedFightBaseChance*60
+
+	if PedInfosListInit.flagwanted then
+		hideidchance = hideidchance + PedHideIDWantedModifier*100
+		fleeinstantchance = fleeinstantchance + PedFleeInstantWantedModifier*100
+		if math.random(1, 10) <= 7 then
+			resistmodifier = resistmodifier + 1 + 2 + 4
+		end
+		fightchance = fightchance + PedFightWantedModifier*100
+	end
+	if PedInfosListInit.flagpedillegalitem then
+		hideidchance = hideidchance + PedHideIDIllegalItemModifier*100
+		fleeinstantchance = fleeinstantchance + PedFleeInstantIllegalItemModifier*100
+		fightchance = fightchance + PedFightIllegalItemModifier*100
+	end
+	if PedInfosListInit.flagpedillegalweapon then
+		hideidchance = hideidchance + PedHideIDIllegalWeaponModifier*100
+		fleeinstantchance = fleeinstantchance + PedFleeInstantIllegalWeaponModifier*100
+		fightchance = fightchance + PedFightIllegalWeaponModifier*100
+	end
+	if PedInfosListInit.flagpedillegalitem or PedInfosListInit.flagpedillegalweapon then
+		resistmodifier = resistmodifier + 32768 + 262144
+	end
+	if PedInfosListInit.flagdrug then
+		hideidchance = hideidchance + PedHideIDDruggedModifier*100
+		fleeinstantchance = fleeinstantchance + PedFleeInstantDruggedModifier*100
+		resistmodifier = resistmodifier + 16384
+		fightchance = fightchance + PedFightDruggedModifier*100
+	end
+	if PedInfosListInit.flagdrunk then
+		hideidchance = hideidchance + PedHideIDDrunkModifier*100
+		fleeinstantchance = fleeinstantchance + PedFleeInstantDrunkModifier*100
+		resistmodifier = resistmodifier + 8192
+		fightchance = fightchance + PedFightDrunkModifier*100
+	end
+	if not PedInfosListInit.flagid then
+		hideidchance = 10000
+	end
+
+	PedInfosListInit.resistmodifier = resistmodifier
+
+	--todo: randomize resistmodifier - only do this after implementing the "threaten-ped"-talk-option.
+
+	if math.random(1, 10000) < fleeinstantchance then
+		PedInfosListInit.flagfleeinstant = true
+		TriggerEvent('pd5m:syncsv:AddPedFlagEntry', source, TargetNetID, 'Arrested')
+	end
+	if math.random(1, 10000) < fightchance then
+		PedInfosListInit.flagfight = true
+	end
+	if math.random(1, 10000) < hideidchance then
+		PedInfosListInit.flaghideid = true
+	end
+
+	table.insert(PedConfigList, PedInfosListInit)
+
+end)
+
+-- checks if the veh was already created. If not, this creates the veh config (includes things like registration, vehicle items, ...)
+-- variables: EntityNetId
+RegisterNetEvent('pd5m:intsv:AddVehToList')
+AddEventHandler('pd5m:intsv:AddVehToList', function(NetID)
+	local flag_duplicate = false
+	for i,ID in ipairs(VehList) do
+		if ID == NetID then
+			flag_duplicate = true
+			if VehConfigList[i].FirstName ~= nil then
+			else
+				table.remove(VehList, i)
+				table.insert(VehList, NetID)
+				TriggerEvent('pd5m:intsv:InitVehConfigList', NetID)
+			end
+			break
+		end
+	end
+	if not flag_duplicate then
+		table.insert(VehList, NetID)
+		TriggerEvent('pd5m:intsv:InitVehConfigList', NetID)
+	end
+end)
+
+-- Creates config information for a specific vehicle
+-- don't use this, trigger Event 'pd5m:intsv:AddVehToList'
+AddEventHandler('pd5m:intsv:InitVehConfigList', function(VehNetID)
+
+	local PedFirstName = nil
+	local Gender = nil
+
+	if math.random(1, 10) <= 5 then
+		Gender = 'Male'
+		PedFirstName = fmalenamesar[math.random(#fmalenamesar)]
+	else
+		Gender = 'Female'
+		PedFirstName = ffemalenamesar[math.random(#ffemalenamesar)]
+	end
+	
+	local roll = math.random(1, 100)
+
+	local Registration = "Valid" -- Default
+	
+	if roll <= 2 then
+		Registration = "Stolen"
+	elseif roll <= 5 then
+		Registration = "Unregistered"
+	elseif roll <= 5 then
+		Registration = "Uninsured"
+	end
+
+
+	local VehInfosListInit = {
+	NetID = VehNetID,
+	Registration = Registration, -- Valid, Uninsured, Unregistered, Stolen
+	PedNetID = nil,
+	savevehitems = {},
+	flagvehillegalitem = false,
+	PedGender = Gender,
+	FirstName = PedFirstName,
+	LastName = snamesar[math.random(#snamesar)],
+	BirthYear = math.random(1980, 1999),
+	BirthMonth = math.random(1, 12),
+	BirthDay = math.random(1, 29),
+	flagwanted = false,
+	saveoffense = 'None',
+	}
+
+	if math.random(1, 10000) < (VehOwnerWantedChance*100) then
+		VehInfosListInit.flagwanted = true
+		VehInfosListInit.saveoffense = OffenseList[math.random(1, #OffenseList)]
+	end
+
+	local illegalitemchance = VehIllegalItemChance*100
+
+	if math.random(1, 10000) < illegalitemchance then
+		for i=1, math.random(1,4),1 do
+			table.insert(VehInfosListInit.savevehitems, IllegalItemList[math.random(1, #IllegalItemList)])
+		end
+		VehInfosListInit.flagvehillegalitem = true
+	end
+	if VehInfosListInit.flagvehillegalitem then
+		for i=1, math.random(1,4),1 do
+			table.insert(VehInfosListInit.savevehitems, ItemList[math.random(1, #ItemList)])
+		end
+	else
+		for i=1, math.random(1,8),1 do
+			table.insert(VehInfosListInit.savevehitems, ItemList[math.random(1, #ItemList)])
+		end
+	end
+
+	table.insert(VehConfigList, VehInfosListInit)
+
+end)
+
+RegisterNetEvent('cl-police:server:Pay', function(jobtype)
+    local src = source
+	local xpgiven = math.random(50,150)
+    local Player = QBCore.Functions.GetPlayer(src)
+	name = GetPlayerName(src)
+	print(jobtype)
+	if jobtype == "arrest" then
+		local money = math.random(750, 1500)
+		local arrestxp = xpgiven+400
+		Player.Functions.AddMoney('bank', money)
+		TriggerClientEvent('ak4y-jobselector:addxp:client',src,  arrestxp)
+		TriggerClientEvent("QBCore:Notify", src, "<b>Police Dispatch</b><br>You have been paid <b>$" ..money.. "<br>"..arrestxp.."XP</b> Gained!", "police")
+		print(name..' arrested ped for $'..money..' '..arrestxp..'xp')
+		if math.random(1, 100) < 15 then
+			Player.Functions.AddItem("policecard", math.random(1, 3), false)
+			TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["policecard"], "add")
+		end
+		if math.random(1, 100) < 5 then
+			Player.Functions.AddItem("nowanted", 1, false)
+			TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items["nowanted"], "add")
+		end
+	end
+	if jobtype == "tow" then
+		local money = math.random(150, 500)
+		Player.Functions.AddMoney('bank', money)
+		TriggerClientEvent('ak4y-jobselector:addxp:client',src,  xpgiven)
+		TriggerClientEvent("QBCore:Notify", src, "<b>Impound Yard</b><br>You have been paid <b>$" ..money.. "<br>"..xpgiven.."XP</b> Gained!", "police")
+		print(name..' towed vehicle for $'..money..' '..xpgiven..'xp')
+	end
+	if jobtype == "coroner" then
+		local money = math.random(150, 250)
+		Player.Functions.AddMoney('bank', money)
+		TriggerClientEvent('ak4y-jobselector:addxp:client',src,  xpgiven)
+		TriggerClientEvent("QBCore:Notify", src, "<b>Coroner Office</b><br>You have been paid <b>$" ..money.. "<br>"..xpgiven.."XP</b> Gained!", "ambulance")
+		print(name..' called coroner for $'..money..' '..xpgiven..'xp')
+	end
+	if jobtype == "assist" then
+		local money = math.random(150, 250)
+		Player.Functions.AddMoney('bank', money)
+		TriggerClientEvent('ak4y-jobselector:addxp:client',src,  xpgiven)
+		TriggerClientEvent("QBCore:Notify", src, "<b>Police Dispatch</b><br>You have been paid <b>$" ..money.. "<br>"..xpgiven.."XP</b> Gained!", "police")
+		print(name..' assisted backup for $'..money..' '..xpgiven..'xp')
+	end
+	if jobtype == "escort" then
+		local money = math.random(350, 750)
+		local escortxp = xpgiven+400
+		Player.Functions.AddMoney('bank', money)
+		TriggerClientEvent('ak4y-jobselector:addxp:client',src,  escortxp)
+		TriggerClientEvent("QBCore:Notify", src, "<b>Police Dispatch</b><br>You have been paid <b>$" ..money.. "<br>"..escortxp.."XP</b> Gained!", "police")
+		print(name..' completed escort job for $'..money..' '..escortxp..'xp')
+	end
+end)
+

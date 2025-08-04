@@ -1,0 +1,535 @@
+-- config variables
+
+-- ped variables
+NormalDrivingBehavior = 524479 -- sets the standard driving style for peds. Refer to https://vespura.com/drivingstyle/ for more info.
+PedDrivingBehavior = 191
+PoliceDrivingBehavior = 525116 -- sets the driving style for AI-Code 3-response. Refer to https://vespura.com/drivingstyle/ for more info.
+
+-- general variables
+ActivateBlipsOnMap = false -- shows the department-blips, the hospital-blips and the tow-blips set by PD5M.
+ActivateCrosshair = true -- activates the F3-function to display a crosshair in the middle of the screen.
+
+-- marker variables
+ActivateArrestMarkers = true -- activates the arrest markers. Should stay activated.
+ActivateClothMarkers = false -- activates the wardrobes.
+ActivateHealMarkers = false -- activates the heal-markers at the hospitals.
+ActivateGarages = false -- activates garages in general. If set to false no garage will be displayed independently of the rest of the settings.
+ActivateWeaponMarkers = false -- activates the armory.
+ActivateEvidenceMarkers = false -- activates the evidence markers. Should stay activated.
+ActivateHelpMarkers = true -- activates the help markers.
+ActivateRepairMarkers = false
+ActivateDeleteMarkers = false -- activates Car Impound / Deletion Markers
+ActivateTPMarkers = false -- activates Teleportation Markers (alternative way to use the tp-command only in stations)
+
+-- service variables
+TowTruckDrivers = {"cs_floyd", "mp_f_bennymech_01", "mp_m_waremech_01", "s_m_m_autoshop_02", "s_m_m_dockwork_01", "s_m_m_gardener_01", "s_m_y_construct_02", "s_m_y_garbage", "s_m_y_winclean_01", "s_m_y_xmech_01"}
+CoronerDrivers = {"csb_cop", "csb_prolsec", "s_f_y_cop_01", "s_f_y_ranger_01", "s_f_y_sheriff_01", "s_f_y_scrubs_01", "s_m_y_autopsy_01", "s_m_y_cop_01", "s_m_y_hwaycop_01", "s_m_y_ranger_01", "s_m_y_sheriff_01"}
+CoronerVehicles = {"coroner2"}
+
+-- Marker-variables
+-- -- Arrest
+var_arrest_symbol = 30
+var_arrest_scaleX = 1.0
+var_arrest_scaleY = 1.0
+var_arrest_scaleZ = 1.0
+var_arrest_red = 0
+var_arrest_green = 0
+var_arrest_blue = 180
+var_arrest_alpha = 200
+var_arrest_bob = false
+var_arrest_face = true
+var_arrest_p19 = 2
+var_arrest_rotate = false
+var_arrest_textdict = nil
+var_arrest_textname = nil
+var_arrest_drawonent = false
+
+-- -- Clothing
+var_cloth_lspd_symbol = 27
+var_cloth_lspd_scaleX = 1.0
+var_cloth_lspd_scaleY = 1.0
+var_cloth_lspd_scaleZ = 1.0
+var_cloth_lspd_red = 0
+var_cloth_lspd_green = 0
+var_cloth_lspd_blue = 180
+var_cloth_lspd_alpha = 200
+var_cloth_lspd_bob = false
+var_cloth_lspd_face = false
+var_cloth_lspd_p19 = 2
+var_cloth_lspd_rotate = true
+var_cloth_lspd_textdict = nil
+var_cloth_lspd_textname = nil
+var_cloth_lspd_drawonent = false
+
+var_cloth_bcso_symbol = 27
+var_cloth_bcso_scaleX = 1.0
+var_cloth_bcso_scaleY = 1.0
+var_cloth_bcso_scaleZ = 1.0
+var_cloth_bcso_red = 225
+var_cloth_bcso_green = 213
+var_cloth_bcso_blue = 3
+var_cloth_bcso_alpha = 200
+var_cloth_bcso_bob = false
+var_cloth_bcso_face = false
+var_cloth_bcso_p19 = 2
+var_cloth_bcso_rotate = true
+var_cloth_bcso_textdict = nil
+var_cloth_bcso_textname = nil
+var_cloth_bcso_drawonent = false
+
+var_cloth_sasp_symbol = 27
+var_cloth_sasp_scaleX = 1.0
+var_cloth_sasp_scaleY = 1.0
+var_cloth_sasp_scaleZ = 1.0
+var_cloth_sasp_red = 230
+var_cloth_sasp_green = 230
+var_cloth_sasp_blue = 230
+var_cloth_sasp_alpha = 200
+var_cloth_sasp_bob = false
+var_cloth_sasp_face = false
+var_cloth_sasp_p19 = 2
+var_cloth_sasp_rotate = true
+var_cloth_sasp_textdict = nil
+var_cloth_sasp_textname = nil
+var_cloth_sasp_drawonent = false
+
+var_cloth_sapr_symbol = 27
+var_cloth_sapr_scaleX = 1.0
+var_cloth_sapr_scaleY = 1.0
+var_cloth_sapr_scaleZ = 1.0
+var_cloth_sapr_red = 0
+var_cloth_sapr_green = 100
+var_cloth_sapr_blue = 0
+var_cloth_sapr_alpha = 200
+var_cloth_sapr_bob = false
+var_cloth_sapr_face = false
+var_cloth_sapr_p19 = 2
+var_cloth_sapr_rotate = true
+var_cloth_sapr_textdict = nil
+var_cloth_sapr_textname = nil
+var_cloth_sapr_drawonent = false
+
+var_cloth_swat_symbol = 27
+var_cloth_swat_scaleX = 1.0
+var_cloth_swat_scaleY = 1.0
+var_cloth_swat_scaleZ = 1.0
+var_cloth_swat_red = 0
+var_cloth_swat_green = 0
+var_cloth_swat_blue = 0
+var_cloth_swat_alpha = 200
+var_cloth_swat_bob = false
+var_cloth_swat_face = false
+var_cloth_swat_p19 = 2
+var_cloth_swat_rotate = true
+var_cloth_swat_textdict = nil
+var_cloth_swat_textname = nil
+var_cloth_swat_drawonent = false
+
+var_cloth_dpos_symbol = 27
+var_cloth_dpos_scaleX = 1.0
+var_cloth_dpos_scaleY = 1.0
+var_cloth_dpos_scaleZ = 1.0
+var_cloth_dpos_red = 255
+var_cloth_dpos_green = 150
+var_cloth_dpos_blue = 0
+var_cloth_dpos_alpha = 200
+var_cloth_dpos_bob = false
+var_cloth_dpos_face = false
+var_cloth_dpos_p19 = 2
+var_cloth_dpos_rotate = true
+var_cloth_dpos_textdict = nil
+var_cloth_dpos_textname = nil
+var_cloth_dpos_drawonent = false
+
+var_cloth_lsfd_symbol = 27
+var_cloth_lsfd_scaleX = 1.0
+var_cloth_lsfd_scaleY = 1.0
+var_cloth_lsfd_scaleZ = 1.0
+var_cloth_lsfd_red = 255
+var_cloth_lsfd_green = 0
+var_cloth_lsfd_blue = 0
+var_cloth_lsfd_alpha = 200
+var_cloth_lsfd_bob = false
+var_cloth_lsfd_face = false
+var_cloth_lsfd_p19 = 2
+var_cloth_lsfd_rotate = true
+var_cloth_lsfd_textdict = nil
+var_cloth_lsfd_textname = nil
+var_cloth_lsfd_drawonent = false
+
+var_cloth_bcfd_symbol = 27
+var_cloth_bcfd_scaleX = 1.0
+var_cloth_bcfd_scaleY = 1.0
+var_cloth_bcfd_scaleZ = 1.0
+var_cloth_bcfd_red = 255
+var_cloth_bcfd_green = 0
+var_cloth_bcfd_blue = 0
+var_cloth_bcfd_alpha = 200
+var_cloth_bcfd_bob = false
+var_cloth_bcfd_face = false
+var_cloth_bcfd_p19 = 2
+var_cloth_bcfd_rotate = true
+var_cloth_bcfd_textdict = nil
+var_cloth_bcfd_textname = nil
+var_cloth_bcfd_drawonent = false
+
+-- -- Heal
+var_heal_symbol = 0
+var_heal_scaleX = 0.62
+var_heal_scaleY = 0.62
+var_heal_scaleZ = 0.62
+var_heal_red = 230
+var_heal_green = 0
+var_heal_blue = 0
+var_heal_alpha = 200
+var_heal_bob = false
+var_heal_face = false
+var_heal_p19 = 2
+var_heal_rotate = false
+var_heal_textdict = nil
+var_heal_textname = nil
+var_heal_drawonent = false
+
+-- -- Vehicles
+var_cars_city_symbol = 36
+var_cars_city_scaleX = 1.5
+var_cars_city_scaleY = 1.5
+var_cars_city_scaleZ = 1.5
+var_cars_city_red = 0
+var_cars_city_green = 0
+var_cars_city_blue = 180
+var_cars_city_alpha = 200
+var_cars_city_bob = false
+var_cars_city_face = true
+var_cars_city_p19 = 2
+var_cars_city_rotate = false
+var_cars_city_textdict = nil
+var_cars_city_textname = nil
+var_cars_city_drawonent = false
+
+var_cars_bcso_symbol = 36
+var_cars_bcso_scaleX = 1.5
+var_cars_bcso_scaleY = 1.5
+var_cars_bcso_scaleZ = 1.5
+var_cars_bcso_red = 225
+var_cars_bcso_green = 213
+var_cars_bcso_blue = 5
+var_cars_bcso_alpha = 200
+var_cars_bcso_bob = false
+var_cars_bcso_face = true
+var_cars_bcso_p19 = 2
+var_cars_bcso_rotate = false
+var_cars_bcso_textdict = nil
+var_cars_bcso_textname = nil
+var_cars_bcso_drawonent = false
+
+var_cars_sapr_symbol = 36
+var_cars_sapr_scaleX = 1.5
+var_cars_sapr_scaleY = 1.5
+var_cars_sapr_scaleZ = 1.5
+var_cars_sapr_red = 0
+var_cars_sapr_green = 100
+var_cars_sapr_blue = 0
+var_cars_sapr_alpha = 200
+var_cars_sapr_bob = false
+var_cars_sapr_face = true
+var_cars_sapr_p19 = 2
+var_cars_sapr_rotate = false
+var_cars_sapr_textdict = nil
+var_cars_sapr_textname = nil
+var_cars_sapr_drawonent = false
+
+var_cars_sasp_symbol = 36
+var_cars_sasp_scaleX = 1.5
+var_cars_sasp_scaleY = 1.5
+var_cars_sasp_scaleZ = 1.5
+var_cars_sasp_red = 230
+var_cars_sasp_green = 230
+var_cars_sasp_blue = 230
+var_cars_sasp_alpha = 200
+var_cars_sasp_bob = false
+var_cars_sasp_face = true
+var_cars_sasp_p19 = 2
+var_cars_sasp_rotate = false
+var_cars_sasp_textdict = nil
+var_cars_sasp_textname = nil
+var_cars_sasp_drawonent = false
+
+var_cars_swat_symbol = 39
+var_cars_swat_scaleX = 1.5
+var_cars_swat_scaleY = 1.5
+var_cars_swat_scaleZ = 1.5
+var_cars_swat_red = 0
+var_cars_swat_green = 0
+var_cars_swat_blue = 0
+var_cars_swat_alpha = 200
+var_cars_swat_bob = false
+var_cars_swat_face = true
+var_cars_swat_p19 = 2
+var_cars_swat_rotate = false
+var_cars_swat_textdict = nil
+var_cars_swat_textname = nil
+var_cars_swat_drawonent = false
+
+var_cars_dpos_symbol = 39
+var_cars_dpos_scaleX = 1.5
+var_cars_dpos_scaleY = 1.5
+var_cars_dpos_scaleZ = 1.5
+var_cars_dpos_red = 255
+var_cars_dpos_green = 150
+var_cars_dpos_blue = 0
+var_cars_dpos_alpha = 200
+var_cars_dpos_bob = false
+var_cars_dpos_face = true
+var_cars_dpos_p19 = 2
+var_cars_dpos_rotate = false
+var_cars_dpos_textdict = nil
+var_cars_dpos_textname = nil
+var_cars_dpos_drawonent = false
+
+var_cars_heli_symbol = 34
+var_cars_heli_scaleX = 1.5
+var_cars_heli_scaleY = 1.5
+var_cars_heli_scaleZ = 1.5
+var_cars_heli_red = 0
+var_cars_heli_green = 0
+var_cars_heli_blue = 180
+var_cars_heli_alpha = 200
+var_cars_heli_bob = false
+var_cars_heli_face = true
+var_cars_heli_p19 = 2
+var_cars_heli_rotate = false
+var_cars_heli_textdict = nil
+var_cars_heli_textname = nil
+var_cars_heli_drawonent = false
+
+var_cars_lsfd_symbol = 39
+var_cars_lsfd_scaleX = 1.5
+var_cars_lsfd_scaleY = 1.5
+var_cars_lsfd_scaleZ = 1.5
+var_cars_lsfd_red = 255
+var_cars_lsfd_green = 0
+var_cars_lsfd_blue = 0
+var_cars_lsfd_alpha = 200
+var_cars_lsfd_bob = false
+var_cars_lsfd_face = true
+var_cars_lsfd_p19 = 2
+var_cars_lsfd_rotate = false
+var_cars_lsfd_textdict = nil
+var_cars_lsfd_textname = nil
+var_cars_lsfd_drawonent = false
+
+var_cars_bcfd_symbol = 39
+var_cars_bcfd_scaleX = 1.5
+var_cars_bcfd_scaleY = 1.5
+var_cars_bcfd_scaleZ = 1.5
+var_cars_bcfd_red = 255
+var_cars_bcfd_green = 0
+var_cars_bcfd_blue = 0
+var_cars_bcfd_alpha = 200
+var_cars_bcfd_bob = false
+var_cars_bcfd_face = true
+var_cars_bcfd_p19 = 2
+var_cars_bcfd_rotate = false
+var_cars_bcfd_textdict = nil
+var_cars_bcfd_textname = nil
+var_cars_bcfd_drawonent = false
+
+
+-- -- Weapons
+var_weap_lspd_symbol = 21
+var_weap_lspd_scaleY = 1.0
+var_weap_lspd_scaleX = 1.0
+var_weap_lspd_scaleZ = 1.0
+var_weap_lspd_red = 0
+var_weap_lspd_green = 0
+var_weap_lspd_blue = 180
+var_weap_lspd_alpha = 200
+var_weap_lspd_bob = false
+var_weap_lspd_face = false
+var_weap_lspd_p19 = 2
+var_weap_lspd_rotate = true
+var_weap_lspd_textdict = nil
+var_weap_lspd_textname = nil
+var_weap_lspd_drawonent = false
+
+var_weap_bcso_symbol = 21
+var_weap_bcso_scaleY = 1.0
+var_weap_bcso_scaleX = 1.0
+var_weap_bcso_scaleZ = 1.0
+var_weap_bcso_red = 225
+var_weap_bcso_green = 213
+var_weap_bcso_blue = 5
+var_weap_bcso_alpha = 200
+var_weap_bcso_bob = false
+var_weap_bcso_face = false
+var_weap_bcso_p19 = 2
+var_weap_bcso_rotate = true
+var_weap_bcso_textdict = nil
+var_weap_bcso_textname = nil
+var_weap_bcso_drawonent = false
+
+var_weap_sapr_symbol = 21
+var_weap_sapr_scaleY = 1.0
+var_weap_sapr_scaleX = 1.0
+var_weap_sapr_scaleZ = 1.0
+var_weap_sapr_red = 0
+var_weap_sapr_green = 100
+var_weap_sapr_blue = 0
+var_weap_sapr_alpha = 200
+var_weap_sapr_bob = false
+var_weap_sapr_face = false
+var_weap_sapr_p19 = 2
+var_weap_sapr_rotate = true
+var_weap_sapr_textdict = nil
+var_weap_sapr_textname = nil
+var_weap_sapr_drawonent = false
+
+var_weap_sasp_symbol = 21
+var_weap_sasp_scaleY = 1.0
+var_weap_sasp_scaleX = 1.0
+var_weap_sasp_scaleZ = 1.0
+var_weap_sasp_red = 230
+var_weap_sasp_green = 230
+var_weap_sasp_blue = 230
+var_weap_sasp_alpha = 200
+var_weap_sasp_bob = false
+var_weap_sasp_face = false
+var_weap_sasp_p19 = 2
+var_weap_sasp_rotate = true
+var_weap_sasp_textdict = nil
+var_weap_sasp_textname = nil
+var_weap_sasp_drawonent = false
+
+var_weap_swat_symbol = 21
+var_weap_swat_scaleY = 1.0
+var_weap_swat_scaleX = 1.0
+var_weap_swat_scaleZ = 1.0
+var_weap_swat_red = 0
+var_weap_swat_green = 0
+var_weap_swat_blue = 0
+var_weap_swat_alpha = 200
+var_weap_swat_bob = false
+var_weap_swat_face = false
+var_weap_swat_p19 = 2
+var_weap_swat_rotate = true
+var_weap_swat_textdict = nil
+var_weap_swat_textname = nil
+var_weap_swat_drawonent = false
+
+var_weap_dpos_symbol = 21
+var_weap_dpos_scaleY = 1.0
+var_weap_dpos_scaleX = 1.0
+var_weap_dpos_scaleZ = 1.0
+var_weap_dpos_red = 255
+var_weap_dpos_green = 150
+var_weap_dpos_blue = 0
+var_weap_dpos_alpha = 200
+var_weap_dpos_bob = false
+var_weap_dpos_face = false
+var_weap_dpos_p19 = 2
+var_weap_dpos_rotate = true
+var_weap_dpos_textdict = nil
+var_weap_dpos_textname = nil
+var_weap_dpos_drawonent = false
+
+var_weap_fire_symbol = 21
+var_weap_fire_scaleY = 1.0
+var_weap_fire_scaleX = 1.0
+var_weap_fire_scaleZ = 1.0
+var_weap_fire_red = 255
+var_weap_fire_green = 0
+var_weap_fire_blue = 0
+var_weap_fire_alpha = 200
+var_weap_fire_bob = false
+var_weap_fire_face = false
+var_weap_fire_p19 = 2
+var_weap_fire_rotate = true
+var_weap_fire_textdict = nil
+var_weap_fire_textname = nil
+var_weap_fire_drawonent = false
+
+-- -- Evidence
+var_evidence_symbol = 29
+var_evidence_scaleX = 0.6
+var_evidence_scaleY = 0.6
+var_evidence_scaleZ = 0.6
+var_evidence_red = 255
+var_evidence_green = 215
+var_evidence_blue = 0
+var_evidence_alpha = 200
+var_evidence_bob = false
+var_evidence_face = false
+var_evidence_p19 = 2
+var_evidence_rotate = true
+var_evidence_textdict = nil
+var_evidence_textname = nil
+var_evidence_drawonent = false
+
+-- -- Help
+var_tut_symbol = 32
+var_tut_scaleX = 0.6
+var_tut_scaleY = 0.6
+var_tut_scaleZ = 0.6
+var_tut_red = 255
+var_tut_green = 255
+var_tut_blue = 255
+var_tut_alpha = 200
+var_tut_bob = false
+var_tut_face = false
+var_tut_p19 = 2
+var_tut_rotate = true
+var_tut_textdict = nil
+var_tut_textname = nil
+var_tut_drawonent = false
+
+-- -- Repair
+var_repair_symbol = 22
+var_repair_scaleX = 2.3
+var_repair_scaleY = 2.3
+var_repair_scaleZ = 2.3
+var_repair_red = 255
+var_repair_green = 150
+var_repair_blue = 0
+var_repair_alpha = 200
+var_repair_bob = false
+var_repair_face = false
+var_repair_p19 = 2
+var_repair_rotate = true
+var_repair_textdict = nil
+var_repair_textname = nil
+var_repair_drawonent = false
+
+-- -- Vehicle Impound
+var_impound_symbol = 30
+var_impound_scaleX = 1.5
+var_impound_scaleY = 1.5
+var_impound_scaleZ = 1.5
+var_impound_red = 255
+var_impound_green = 150
+var_impound_blue = 0
+var_impound_alpha = 200
+var_impound_bob = false
+var_impound_face = true
+var_impound_p19 = 2
+var_impound_rotate = false
+var_impound_textdict = nil
+var_impound_textname = nil
+var_impound_drawonent = false
+
+-- -- TP
+var_tp_symbol = 1
+var_tp_scaleX = 2.0
+var_tp_scaleY = 2.0
+var_tp_scaleZ = 3.0
+var_tp_red = 45
+var_tp_green = 38
+var_tp_blue = 106
+var_tp_alpha = 100
+var_tp_bob = false
+var_tp_face = false
+var_tp_p19 = 2
+var_tp_rotate = false
+var_tp_textdict = nil
+var_tp_textname = nil
+var_tp_drawonent = false
